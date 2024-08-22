@@ -10,3 +10,4 @@ View All Transactions: Browse through your entire transaction history with ease.
 Add New Transaction: Quickly add new expenses to keep your records up to date.
 Profile: View your profile information.
 Logout: Securely log out of the app when you're done.
+Dark/Light Mode: Application supports both dark & light mode
