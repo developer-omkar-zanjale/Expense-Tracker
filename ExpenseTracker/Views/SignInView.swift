@@ -34,7 +34,7 @@ struct SignInView: View {
                 }
                 
                 //MARK: Input Textfields
-                VStack(spacing: 1) {
+                VStack(spacing: 4) {
                     TextField("", text: $signInVM.userName)
                         .modifier(CustomTextFieldModifier(inputText: $signInVM.userName, placeHolder: StringConstant.username))
                     SecureField("", text: $signInVM.password)

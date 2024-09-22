@@ -9,6 +9,8 @@ import SwiftUI
 
 //MARK: TextField
 struct CustomTextFieldModifier: ViewModifier {
+    @Environment(\.colorScheme) var colorScheme
+    
     @Binding var inputText: String
     var placeHolder: String
     func body(content: Content) -> some View {
@@ -19,11 +21,20 @@ struct CustomTextFieldModifier: ViewModifier {
             .placeholder(when: inputText.isEmpty) {
                 Text(placeHolder)
                     .font(Font(CTFont(.menuItem, size: 22)))
-                    .foregroundColor(.white)
+                    .foregroundColor(colorScheme == .dark ? .white : .black)
                     .padding()
             }
     }
 }
+
+#Preview(body: {
+    ZStack {
+        Color.background.ignoresSafeArea()
+        TextField("", text: .constant(""))
+            .modifier(CustomTextFieldModifier(inputText: .constant(""), placeHolder: StringConstant.username))
+            .padding(.horizontal)
+    }
+})
 
 //MARK: NavigationBarModifier
 
