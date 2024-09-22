@@ -12,23 +12,13 @@ struct AddTransactionView: View {
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     @EnvironmentObject var trasactionListVM: TransactionListViewModel
     
-    @State var merchant = ""
-    @State var transactionType = ""
-    @State var isTransfer = ""
-    @State var isExpense = ""
-    @State var isPending = ""
-    @State var amount = ""
-    @State var category = ""
-    @State var isAlertShown = false
-    @State var isAddTransactionClicked = false
-    
-    let addTransactionVM = AddTransactionViewModel()
+    @StateObject var addTransactionVM = AddTransactionViewModel()
     
     var body: some View {
-        if isAddTransactionClicked {
+        if addTransactionVM.isAddTransactionClicked {
             ZStack {
                 Color.background
-                GIFView(fileName: "TransactionDone")
+                GIFView(fileName: ImageConstant.GIFTransactionDone)
                     .frame(width: 140, height: 140)
                     .cornerRadius(70)
                     .padding()
@@ -37,71 +27,71 @@ struct AddTransactionView: View {
         } else {
             ScrollView {
                 VStack {
-                    Text("Add New Transaction")
+                    Text(StringConstant.addNewTransaction)
                         .font(.title2)
                         .bold()
                         .padding()
                     //MARK: Inputes
                     VStack(spacing: 8) {
-                        TextField("Merchant", text: $merchant)
-                            .modifier(CustomTextFieldModifier(inputText: $merchant, placeHolder: ""))
-                        CustomDropDownView(elements: addTransactionVM.categories, selectedElement: $category, title: "Category")
-                        TextField("Amount", text: $amount)
-                            .modifier(CustomTextFieldModifier(inputText: $amount, placeHolder: ""))
+                        TextField(StringConstant.merchantName, text: $addTransactionVM.merchant)
+                            .modifier(CustomTextFieldModifier(inputText: $addTransactionVM.merchant, placeHolder: ""))
+                        CustomDropDownView(elements: addTransactionVM.categories, selectedElement: $addTransactionVM.category, title: StringConstant.category)
+                        TextField(StringConstant.amount, text: $addTransactionVM.amount)
+                            .modifier(CustomTextFieldModifier(inputText: $addTransactionVM.amount, placeHolder: ""))
                             .keyboardType(.numberPad)
-                        CustomDropDownView(elements: addTransactionVM.transactionTypes, selectedElement: $transactionType, title: "Transaction Type")
-                        CustomDropDownView(elements: addTransactionVM.transactionDecisions, selectedElement: $isTransfer, title: "Transaction Transfer Status")
-                        if isTransfer == "False" {
-                            CustomDropDownView(elements: addTransactionVM.transactionDecisions, selectedElement: $isPending, title: "Transaction Pending Status")
+                        CustomDropDownView(elements: addTransactionVM.transactionTypes, selectedElement: $addTransactionVM.transactionType, title: StringConstant.transactionType)
+                        CustomDropDownView(elements: addTransactionVM.transactionDecisions, selectedElement: $addTransactionVM.isTransfer, title: StringConstant.transactionTransferStatus)
+                        if addTransactionVM.isTransfer == AppConstant.FalseStr {
+                            CustomDropDownView(elements: addTransactionVM.transactionDecisions, selectedElement: $addTransactionVM.isPending, title: StringConstant.transactionPendingStatus)
                         }
-                        CustomDropDownView(elements: addTransactionVM.transactionDecisions, selectedElement: $isExpense, title: "Transaction Expense Status")
+                        CustomDropDownView(elements: addTransactionVM.transactionDecisions, selectedElement: $addTransactionVM.isExpense, title: StringConstant.isExpense)
                     }
                     .padding([.bottom, .top])
                     .padding(.bottom)
                     
                     //MARK: Add Transaction Btn
                     Button {
-                        if let newTransaction = addTransactionVM.addTransaction(merchant: merchant, category: category, amount: amount, transactionType: transactionType, isTransfer: isTransfer, isPending: isPending, isExpense: isExpense) {
-                            self.isAddTransactionClicked = true
+                        if let newTransaction = addTransactionVM.addTransaction() {
+                            addTransactionVM.isAddTransactionClicked = true
                             if trasactionListVM.saveTransaction(transaction: newTransaction) {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                    self.resetInputes()
-                                    self.isAddTransactionClicked = false
+                                    addTransactionVM.resetInputes()
+                                    addTransactionVM.isAddTransactionClicked = false
                                     self.trasactionListVM.getUserTransactions()
-                                    self.addTransactionVM.alertTitle = "Transaction Added."
-                                    isAlertShown = true
+                                    self.addTransactionVM.alertTitle = AlertConstant.transactionAdded
+                                    addTransactionVM.isAlertShown = true
                                 }
                             } else {
-                                self.addTransactionVM.alertTitle = "Unable to add. Fill appropriate data!"
-                                isAlertShown = true
+                                self.addTransactionVM.alertTitle = AlertConstant.unableToAddFillAppropriateData
+                                addTransactionVM.isAlertShown = true
                             }
                         } else {
-                            self.isAddTransactionClicked = false
-                            self.addTransactionVM.alertTitle = "Unable to add. Fill appropriate data!"
-                            isAlertShown = true
+                            addTransactionVM.isAddTransactionClicked = false
+                            self.addTransactionVM.alertTitle = AlertConstant.unableToAddFillAppropriateData
+                            addTransactionVM.isAlertShown = true
                         }
                     } label: {
-                        CustomButtonView(title: "Add Transaction")
+                        CustomButtonView(title: StringConstant.addTransaction)
                     }
                     
                 }.padding()
-                .alert(addTransactionVM.alertTitle, isPresented: $isAlertShown) {}
             }
             .background(Color.background)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(addTransactionVM.isAlertShown)
+            .overlay {
+                //MARK: Alert
+                if addTransactionVM.isAlertShown {
+                    AlertView(message: addTransactionVM.alertTitle, firstBtnTitle: AlertConstant.OK) {
+                        addTransactionVM.isAlertShown = false
+                    }
+                    .ignoresSafeArea()
+                }
+            }
             .onAppear {
-                Constant.lastTransactionID =  trasactionListVM.transactionList.map({$0.id}).max() ?? 0
+                AppConstant.lastTransactionID =  trasactionListVM.transactionList.map({$0.id}).max() ?? 0
             }
         }
-    }
-    
-    private func resetInputes() {
-        merchant = ""
-        transactionType = ""
-        isTransfer = ""
-        isExpense = ""
-        isPending = ""
-        amount = ""
-        category = ""
     }
 }
 

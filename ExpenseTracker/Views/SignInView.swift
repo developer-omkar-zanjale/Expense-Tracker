@@ -9,16 +9,9 @@ import SwiftUI
 
 struct SignInView: View {
     
-    @State var isShowStartView = false
-    @State var userName: String = ""
-    @State var password: String = ""
-    @State var isSignInClicked: Bool = false
-    @State var isAlertShown = false
-    @State var alertTitle = "Something went wrong!"
-    @State var isNavigateToHome: Bool = false
     @EnvironmentObject var transactionListVM: TransactionListViewModel
     
-    let signInVM = SignInViewModel()
+    @StateObject var signInVM = SignInViewModel()
     
     var body: some View {
         
@@ -27,7 +20,7 @@ struct SignInView: View {
                 .ignoresSafeArea()
             VStack(alignment: .leading, spacing: 20) {
                 HStack {
-                    Text("Sign In")
+                    Text(StringConstant.signIn)
                         .font(.title)
                         .bold()
                     Spacer()
@@ -35,34 +28,35 @@ struct SignInView: View {
                         .foregroundColor(.dimGray)
                         .frame(width: 2, height: 50)
                         .padding()
-                    Image("india")
+                    Image(ImageConstant.india)
                         .resizable()
                         .frame(width: 40, height: 40)
                 }
                 
                 //MARK: Input Textfields
                 VStack(spacing: 1) {
-                    TextField("", text: $userName)
-                        .modifier(CustomTextFieldModifier(inputText: $userName, placeHolder: "Username"))
-                    SecureField("", text: $password)
-                        .modifier(CustomTextFieldModifier(inputText: $password, placeHolder: "Password"))
+                    TextField("", text: $signInVM.userName)
+                        .modifier(CustomTextFieldModifier(inputText: $signInVM.userName, placeHolder: StringConstant.username))
+                    SecureField("", text: $signInVM.password)
+                        .modifier(CustomTextFieldModifier(inputText: $signInVM.password, placeHolder: StringConstant.password))
                 }
                 
                 HStack {
                     //MARK: SIGN IN Button
                     Button {
-                        let searchResult = signInVM.searchUserInDatabase(userName: userName, password: password)
+                        let encodedPass = SecureService.encode(str: signInVM.password)
+                        let searchResult = signInVM.searchUserInDatabase(userName: signInVM.userName, password: encodedPass ?? "")
                         if searchResult.user != nil {
                             transactionListVM.currentUser = searchResult.user
-                            isNavigateToHome = true
+                            signInVM.isNavigateToHome = true
                         } else {
-                            alertTitle = searchResult.alertMessage
-                            isAlertShown = true
-                            Constant.signUpFromFinger = false
+                            signInVM.alertTitle = searchResult.alertMessage
+                            signInVM.isAlertShown = true
+                            AppConstant.signUpFromFinger = false
                             UserDefaults.standard.set(false, forKey: UserDefaultKeys.isFingerActivated.rawValue)
                         }
                     } label: {
-                        CustomButtonView(title: "SIGN IN")
+                        CustomButtonView(title: StringConstant.signIn.uppercased())
                     }
                     
                     //MARK: Fingerprint Button
@@ -72,23 +66,24 @@ struct SignInView: View {
                                 if authResult {
                                     let userEmail = UserDefaults.standard.string(forKey: UserDefaultKeys.currentUserName.rawValue) ?? ""
                                     let userPassword = UserDefaults.standard.string(forKey: UserDefaultKeys.currentUserPassword.rawValue) ?? ""
+                                                                        
                                     let searchResult = signInVM.searchUserInDatabase(userName: userEmail, password: userPassword)
                                     if searchResult.user != nil {
                                         transactionListVM.currentUser = searchResult.user
-                                        isNavigateToHome = true
+                                        signInVM.isNavigateToHome = true
                                     } else {
-                                        self.alertTitle = "Please try again!"
-                                        self.isAlertShown = true
+                                        signInVM.alertTitle = AlertConstant.pleaseTryAgain
+                                        signInVM.isAlertShown = true
                                     }
                                 } else {
-                                    self.alertTitle = "Something Went Wrong!"
-                                    self.isAlertShown = true
+                                    signInVM.alertTitle = AlertConstant.somethingWentWrong
+                                    signInVM.isAlertShown = true
                                 }
                             }
                         } else {
-                            alertTitle = "Please Sign In to activate Fingerprint."
-                            isAlertShown = true
-                            Constant.signUpFromFinger = true
+                            signInVM.alertTitle = AlertConstant.pleaseSignInToActivateFingerprint
+                            signInVM.isAlertShown = true
+                            AppConstant.signUpFromFinger = true
                         }
                     } label: {
                         ZStack {
@@ -96,27 +91,21 @@ struct SignInView: View {
                                 .strokeBorder(.green, lineWidth: 3)
                                 .frame(width: 50, height: 50)
                             
-                            Image("fingerprint")
+                            Image(ImageConstant.fingerprint)
                                 .resizable()
                                 .frame(width: 40, height: 40, alignment: .center)
                         }
                     }
-                    
-                    //MARK: Alert
-                    .alert(Text(alertTitle), isPresented: $isAlertShown) {
-                        Button("OK", role: .cancel) { }
-                    }
-                    
                 }
                 
                 //MARK: SignUp button
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("New Here?")
+                    Text(StringConstant.newHere)
                         .padding(.top)
                     NavigationLink {
                         SignUpView()
                     } label: {
-                        Text("Register")
+                        Text(StringConstant.register)
                             .foregroundColor(.green)
                         
                     }
@@ -126,20 +115,23 @@ struct SignInView: View {
             .padding()
             .navigationBarHidden(true)
             NavigationLink(destination:
-                            ContentView(),
-                           isActive: $isNavigateToHome){}
-            .fullScreenCover(isPresented: $isShowStartView) {
+                            HomeView(),
+                           isActive: $signInVM.isNavigateToHome){}
+                .fullScreenCover(isPresented: $signInVM.isShowStartView) {
                 self.signInVM.isShowStartView = false
             } content: {
                 GetStartedView()
             }
+            //MARK: Alert
+            if signInVM.isAlertShown {
+                AlertView(message: signInVM.alertTitle, firstBtnTitle: AlertConstant.OK) {
+                    signInVM.isAlertShown = false
+                }
+            }
         }
         .onAppear {
-            password = ""
-            userName = ""
-            if signInVM.isShowStartView {
-                self.isShowStartView = true
-            }
+            signInVM.password = ""
+            signInVM.userName = ""
         }
     }
 }
@@ -148,6 +140,7 @@ struct SignInView_Previews: PreviewProvider {
     
     static var previews: some View {
         SignInView()
+            .preferredColorScheme(.dark)
     }
     
 }

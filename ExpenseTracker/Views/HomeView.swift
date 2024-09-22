@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  HomeView.swift
 //  ExpenseTracker
 //
 //  Created by Omkar Zanjale on 28/12/22.
@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftUICharts
 
-struct ContentView: View {
+struct HomeView: View {
   
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     @EnvironmentObject var transactionListVM: TransactionListViewModel
@@ -26,11 +26,11 @@ struct ContentView: View {
             VStack(alignment: .leading, spacing: 24) {
                 HStack {
                     //MARK: Title
-                    Text("Overview")
+                    Text(StringConstant.overview)
                         .font(.title)
                         .bold()
                     Spacer()
-                    CustomDropDownView(elements: intervalData, selectedElement: $intervalForChartData, showBorder: true, showBacground: false, title: "Intervals", showTitleLabel: false)
+                    CustomDropDownView(elements: intervalData, selectedElement: $intervalForChartData, showBorder: true, showBacground: false, title: StringConstant.intervals, showTitleLabel: false)
                 }.padding(.leading)
                 //MARK: Chart
                 let chartData = transactionListVM.getChartDataFor(interval: intervalForChartData)
@@ -49,15 +49,15 @@ struct ContentView: View {
                     .chartStyle(ChartStyle(backgroundColor: Color.systemBackground, foregroundColor: ColorGradient(Color.icon.opacity(0.2), Color.icon)))
                     .frame(height: 300)
                 } else {
-                    let title = intervalForChartData.isEmpty ? "Select Interval" : "No Expenses Found For '\(intervalForChartData)' Interval"
-                    NoDataView(title: title, showButton: transactionListVM.transactionList.isEmpty, buttonTitle: "Get Demo Transactions")
+                    let title = intervalForChartData.isEmpty ? StringConstant.selectInterval : "\(StringConstant.noExpensesFoundFor) '\(intervalForChartData)' \(StringConstant.interval)"
+                    NoDataView(title: title, showButton: transactionListVM.transactionList.isEmpty, buttonTitle: StringConstant.getDemoTransactions)
                     
                 }
                 if !transactionListVM.transactionList.isEmpty {
                     //MARK: Transactions
                     RecentTransactionView()
                 } else {
-                    NoDataView(title: "No Recent Transactions! \nAdd transaction from top bar", showButton: false)
+                    NoDataView(title: StringConstant.noRecentTransactionsAddTransactionFromTopbar, showButton: false)
                 }
             }
             .padding()
@@ -75,7 +75,7 @@ struct ContentView: View {
             UserDefaults.standard.set(false, forKey: UserDefaultKeys.isNotFirstLaunch.rawValue)
             UserDefaults.standard.removeObject(forKey: UserDefaultKeys.currentUserName.rawValue)
             UserDefaults.standard.removeObject(forKey: UserDefaultKeys.currentUserPassword.rawValue)
-            Constant.signUpFromFinger = false
+            AppConstant.signUpFromFinger = false
             self.mode.wrappedValue.dismiss()
         }
         UINavigationBar.appearance().barTintColor = UIColor(Color.background)
@@ -85,7 +85,7 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        HomeView()
             .environmentObject(TransactionListViewModel())
     }
 }

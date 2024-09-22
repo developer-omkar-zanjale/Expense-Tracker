@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict/>
+<dict>
+    <key>UIAppFonts</key>
+    <array>
+        <string>Figtree-LightItalic.ttf</string>
+        <string>Figtree-Italic.ttf</string>
+        <string>Figtree-Black.ttf</string>
+        <string>Figtree-Bold.ttf</string>
+        <string>Figtree-ExtraBold.ttf</string>
+        <string>Figtree-Light.ttf</string>
+        <string>Figtree-Medium.ttf</string>
+        <string>Figtree-Regular.ttf</string>
+        <string>Figtree-SemiBold.ttf</string>
+        <string>Figtree-VariableFont_wght.ttf</string>
+    </array>
+</dict>
 </plist>

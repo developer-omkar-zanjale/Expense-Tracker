@@ -27,8 +27,8 @@ struct CustomDropDownView: View {
                 if showTitleLabel {
                     Text(title)
                 }
-                Picker(title.isEmpty ? "Select" : title, selection: $selectedElement) {
-                    selectedElement.isEmpty ? Text("Select") : Text(title)
+                Picker(title.isEmpty ? StringConstant.select : title, selection: $selectedElement) {
+                    selectedElement.isEmpty ? Text(StringConstant.select) : Text(title)
                     ForEach(elements, id: \.self) {
                         Text($0)
                     }

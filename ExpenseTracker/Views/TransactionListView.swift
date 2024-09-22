@@ -10,24 +10,27 @@ import SwiftUI
 struct TransactionListView: View {
     @EnvironmentObject var transactionListVM: TransactionListViewModel
     var body: some View {
-        VStack {
-            List {
-                ForEach(Array(transactionListVM.getGroupTransactionsByMonth()), id: \.key) {key, transactions in
-                    //MARK: Transaction Months
-                    Section {
-                        //MARK: Transactions
-                        ForEach(transactions) { transaction in
-                            TransactionRowView(transaction: transaction)
+        ZStack {
+            Color.background.ignoresSafeArea()
+            VStack {
+                List {
+                    ForEach(Array(transactionListVM.getGroupTransactionsByMonth()), id: \.key) {key, transactions in
+                        //MARK: Transaction Months
+                        Section {
+                            //MARK: Transactions
+                            ForEach(transactions) { transaction in
+                                TransactionRowView(transaction: transaction)
+                            }
+                        } header: {
+                            Text(key)
                         }
-                    } header: {
-                        Text(key)
+                        .listSectionSeparator(.hidden)
                     }
-                    .listSectionSeparator(.hidden)
                 }
+                .listStyle(.plain)
             }
-            .listStyle(.plain)
         }
-        .navigationTitle("Transactions")
+        .navigationTitle(StringConstant.transactions)
         .navigationBarTitleDisplayMode(.inline)
     }
 }

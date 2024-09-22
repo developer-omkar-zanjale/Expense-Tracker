@@ -32,7 +32,6 @@ struct GIFView: UIViewRepresentable {
             
             return view
         } catch {
-            print(error.localizedDescription)
             return UIView()
         }
     }

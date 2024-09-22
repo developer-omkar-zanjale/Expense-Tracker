@@ -8,10 +8,18 @@
 import Foundation
 import LocalAuthentication
 
-class SignInViewModel {
+class SignInViewModel: ObservableObject {
     
-    private let viewContext = PersistenceController.shared.container.viewContext
-    var isShowStartView = false
+    private let coreDataService = CoreDataService.shared
+    @Published var isShowStartView = false
+    @Published var userName: String = ""
+    @Published var password: String = ""
+    @Published var isSignInClicked: Bool = false
+    @Published var isAlertShown = false
+    @Published var alertTitle = AlertConstant.somethingWentWrong
+    @Published var isNavigateToHome: Bool = false
+    
+    let logService = LoggerService()
     
     init() {
         isShowStartView = checkForStartScreen()
@@ -27,16 +35,16 @@ class SignInViewModel {
             let reson = "Login to Expense Tracker"
             contex.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reson) { result, authError in
                 if result {
-                    print("Local authentication success.")
+                    self.logService.printLog("SignInViewModel: Local authentication success.")
                 } else {
-                    print("Local authentication failed!")
+                    self.logService.printLog("SignInViewModel: Local authentication failed!")
                 }
                 complition(result)
                 return
             }
         } else {
             complition(false)
-            print("No authentication sources.")
+            self.logService.printLog("SignInViewModel: No authentication sources.")
         }
     }
     //
@@ -44,40 +52,38 @@ class SignInViewModel {
     //
     func searchUserInDatabase(userName: String, password: String) -> (user: UserData?, alertMessage: String) {
         let validationResult = validateInputes(userName: userName, password: password)
-        do {
-            if validationResult.result {
-                let users = try viewContext.fetch(UserData.fetchRequest())
-                for user in users {
-                    if user.email == userName && password == user.password {
-                        if Constant.signUpFromFinger {
-                            UserDefaults.standard.set(true, forKey: UserDefaultKeys.isFingerActivated.rawValue)
-                        }
-                        UserDefaults.standard.set(user.email, forKey: UserDefaultKeys.currentUserName.rawValue)
-                        UserDefaults.standard.set(user.password, forKey: UserDefaultKeys.currentUserPassword.rawValue)
-                        print("User Found.")
-                        return (user, "Valid user")
-                    }
+        if validationResult.result {
+            if let matchedUser = coreDataService.readUsers(email: userName, fetchLimit: 1).first {
+                guard let matchedUserPass = matchedUser.password else {
+                    logService.printLog("SignInViewModel: Unable to get matched user passowrd!")
+                    return(nil, AlertConstant.unableToSignInAtThisMomentPleaseTryAgain)
                 }
-            } else {
-                return (nil, validationResult.alertMessage)
+                if matchedUserPass == password {
+                    if AppConstant.signUpFromFinger {
+                        UserDefaults.standard.set(true, forKey: UserDefaultKeys.isFingerActivated.rawValue)
+                    }
+                    UserDefaults.standard.set(userName, forKey: UserDefaultKeys.currentUserName.rawValue)
+                    UserDefaults.standard.set(matchedUserPass, forKey: UserDefaultKeys.currentUserPassword.rawValue)
+                    self.logService.printLog("SignInViewModel: User Found.")
+                    return (matchedUser, AlertConstant.validUser)
+                }
             }
-            return (nil, "Wrong Email or Password!")
-        } catch {
-            print("Error while fetching data: ",error.localizedDescription)
-            return (nil, error.localizedDescription)
+        } else {
+            return (nil, validationResult.alertMessage)
         }
+        return (nil, AlertConstant.wrongEmailOrPassword)
     }
     
     private func validateInputes(userName: String, password: String) -> (result: Bool, alertMessage: String) {
         if !userName.isEmpty && !password.isEmpty {
-            if Constant.isEmailValid(email: userName) {
+            if AppConstant.isEmailValid(email: userName) {
                 return (true, "")
             } else {
-                return (false, "Invalid Email format")
+                return (false, AlertConstant.invalidEmailFormat)
             }
         } else {
-            print("Enter all fields!")
-            return (false, "Enter Email & Password!")
+            self.logService.printLog("Enter all fields!")
+            return (false, AlertConstant.enterEmailNPassword)
         }
     }
     

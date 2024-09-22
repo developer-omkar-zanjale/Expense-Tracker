@@ -8,68 +8,57 @@
 import UIKit
 import CoreData
 
-class SignUpViewModel {
+class SignUpViewModel: ObservableObject {
     
-    private let viewContext = PersistenceController.shared.container.viewContext
+    @Published var name: String = ""
+    @Published var email: String = ""
+    @Published var password: String = ""
+    @Published var confirmPassword: String = ""
+    @Published var isOpenImagePicker = false
+    @Published var selectedImage: UIImage = UIImage()
+    @Published var isAlertShown = false
+    @Published var alertTitle = AlertConstant.somethingWentWrong
+    @Published var isEmailVerified = false
+    @Published var isPasswordVerified = false
+    @Published var isShowToastMesssage: Bool = false
+    
+    
+    private let coreDataService = CoreDataService.shared
+    let logService = LoggerService()
 
     func checkUserAvailability(email: String) -> (result: Bool, alertMessage: String) {
-        if Constant.isEmailValid(email: email) {
-            do {
-                let allUsers = try viewContext.fetch(UserData.fetchRequest())
-                if allUsers.filter({$0.email == email}).count == 0 {
-                    return (true, "")
-                } else {
-                    return (false, "Email already used!")
-                }
-            } catch {
-                print("Error while fetching data: ",error.localizedDescription)
-                return (false, "Database Error")
+        if AppConstant.isEmailValid(email: email) {
+            if let _ = coreDataService.readUsers(email: email, fetchLimit: 1).first {
+                return (false, AlertConstant.emailAlreadyUsed)
+            } else {
+                return (true, "")
             }
         }
-        return (false, "Invalid Email!")
+        return (false, AlertConstant.invalidEmail)
     }
     
     func createUser(name: String, email: String, password: String, confirmPassword: String, selectedImage: UIImage) -> (result: Bool, alertMessage: String) {
         let validationResult = validateInputes(name: name, email: email, password: password, confirmPassword: confirmPassword)
         if validationResult.result {
-            let user = UserData(context: viewContext)
-            user.name = name
-            user.email = email
-            user.password = password
-            user.profileImage = selectedImage.jpegData(compressionQuality: 0.8)
-            if saveContext() {
-                return (true, "")
-            } else {
-                return (false,"Unable to create account")
-            }
+            let result = coreDataService.createUser(name: name, email: email, password: password, selectedImage: selectedImage)
+            return (result, result ? "" : AlertConstant.unableToCreateAccount)
         }
         return (false, validationResult.alertMessage)
     }
     
-    private func saveContext() -> Bool {
-        do {
-            try viewContext.save()
-            return true
-        } catch {
-            let error = error as NSError
-            print("An error occured: \(error)")
-            return false
-        }
-    }
-    
     private func validateInputes(name: String, email: String, password: String, confirmPassword: String) -> (result: Bool, alertMessage: String) {
         if !name.isEmpty && !email.isEmpty && !password.isEmpty && !confirmPassword.isEmpty {
-            if Constant.isEmailValid(email: email) {
+            if AppConstant.isEmailValid(email: email) {
                 if password == confirmPassword {
                     return (true, "")
                 } else {
-                    return (false, "Both Password must be same!")
+                    return (false, AlertConstant.bothPasswordMustBeSame)
                 }
             } else {
-                return (false, "Enter Valid Email!")
+                return (false, AlertConstant.enterValidEmail)
             }
         } else {
-            return (false, "Please enter all details.")
+            return (false, AlertConstant.pleaseEnterAllDetails)
         }
     }
 }

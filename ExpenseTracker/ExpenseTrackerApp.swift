@@ -10,17 +10,13 @@ import SwiftUI
 @main
 struct ExpenseTrackerApp: App {
     
-    let persistanceController = PersistenceController.shared
+    let persistanceController = CoreDataService.shared
     @ObservedObject var trasactionListVM: TransactionListViewModel = TransactionListViewModel()
     
     var body: some Scene {
         WindowGroup {
             NavigationView {
-//                if UserDefaults.standard.bool(forKey: UserDefaultKeys.isNotFirstLaunch.rawValue) {
-                    SignInView()
-//                } else {
-//                    GetStartedView()
-//                }
+                SignInView()
             }
             .accentColor(.primary)
             .environment(\.managedObjectContext,

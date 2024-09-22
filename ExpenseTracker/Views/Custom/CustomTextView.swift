@@ -27,6 +27,6 @@ struct CustomTextView: View {
 
 struct CustomTextView_Previews: PreviewProvider {
     static var previews: some View {
-        CustomTextView(text: "Name")
+        CustomTextView(text: StringConstant.name)
     }
 }

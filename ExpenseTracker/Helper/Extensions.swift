@@ -154,5 +154,11 @@ extension View {
             self
         }
     }
+    //
+    //Make Rounded corner for any view
+    //
+    func roundedCorner(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape(CustomRoundedCorner(radius: radius, corners: corners))
+    }
 }
 

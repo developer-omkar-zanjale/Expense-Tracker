@@ -23,7 +23,8 @@ class TransactionListViewModel: ObservableObject {
     }
     
     private var cancellables = Set<AnyCancellable>()
-    private let viewContext = PersistenceController.shared.container.viewContext
+    private let viewContext = CoreDataService.shared.container.viewContext
+    let logService = LoggerService()
     
     func saveTransaction(transaction: Transaction) -> Bool {
         let transactionData = TransactionData(context: viewContext)
@@ -45,7 +46,7 @@ class TransactionListViewModel: ObservableObject {
             try viewContext.save()
             return true
         } catch {
-            print("Error saving Transaction: ",error.localizedDescription)
+            logService.printLog("Error saving Transaction: ",error.localizedDescription)
             return false
         }
   
@@ -72,7 +73,7 @@ class TransactionListViewModel: ObservableObject {
                 newTransaction.isEdited = transaction.isEdited
                 return newTransaction
             }) ?? []
-            print("Founded user transactions: \(usersTransactions.count)")
+            logService.printLog("Founded user transactions: \(usersTransactions.count)")
             self.transactionList = usersTransactions
         }
     }
@@ -80,7 +81,7 @@ class TransactionListViewModel: ObservableObject {
     func getDemoTransactionList() {
         
         guard let url = URL(string: "https://designcode.io/data/transactions.json") else {
-            print("Invalid URL")
+            logService.printLog("Invalid URL")
             return
         }
         
@@ -97,9 +98,9 @@ class TransactionListViewModel: ObservableObject {
             .sink { complition in
                 switch complition {
                 case .failure(let error):
-                    print("Error while decoding Transactions: ",error.localizedDescription)
+                    self.logService.printLog("Error while decoding Transactions: ",error.localizedDescription)
                 case .finished:
-                    print("Decoding transaction finished.")
+                    self.logService.printLog("Decoding transaction finished.")
                 }
             } receiveValue: { [weak self]result in
                 self?.transactionList = result
@@ -151,7 +152,7 @@ class TransactionListViewModel: ObservableObject {
 //            let calendarDate = Calendar.current.dateComponents([.day], from: date)
 //            let day = Double(calendarDate.day!)
             cumulativeSum.append((date.formatted(), sum))
-            print(date.formatted(), "Daily total: ", dailyTotal, "sum", sum)
+            self.logService.printLog(date.formatted(), "Daily total: ", dailyTotal, "sum", sum)
             
         }
         return cumulativeSum
@@ -170,7 +171,7 @@ class TransactionListViewModel: ObservableObject {
         case TransactionInterval.all.rawValue:
             return accumulateTransactions(forCurrentDate: false, intervalOf: .year)
         default:
-            print("Interval case missmatch!")
+            self.logService.printLog("Interval case missmatch!")
             return []
         }
     }

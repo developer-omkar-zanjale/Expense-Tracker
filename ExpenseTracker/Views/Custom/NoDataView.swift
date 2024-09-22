@@ -11,7 +11,7 @@ struct NoDataView: View {
     var title: String
     var showButton: Bool
     var buttonTitle: String = ""
-    var buttonImageName = "arrow.down.doc"
+    var buttonImageName = ImageConstant.SYS_arrow_down_doc
     @EnvironmentObject var transactionListVM: TransactionListViewModel
 
     var body: some View {
@@ -49,6 +49,6 @@ struct NoDataView: View {
 
 struct NoDataView_Previews: PreviewProvider {
     static var previews: some View {
-        NoDataView(title: "text dfkghdf gdjdfg dfgdfjh dgfgd", showButton: true, buttonTitle: "Button")
+        NoDataView(title: "text", showButton: true, buttonTitle: "Button")
     }
 }

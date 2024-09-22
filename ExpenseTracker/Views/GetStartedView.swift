@@ -16,13 +16,13 @@ struct GetStartedView: View {
             Color.background
                 .ignoresSafeArea()
             VStack {
-                Text("Welcome")
+                Text(StringConstant.welcome)
                     .font(.system(size: 50))
                     .bold()
                     .shadow(color: .yellow, radius: 1)
                     .foregroundColor(.green)
                 
-                GIFView(fileName: "money")
+                GIFView(fileName: ImageConstant.GIFMoney)
                     .frame(height: 400)
                     .background(Color.background)
                     .padding()
@@ -36,7 +36,7 @@ struct GetStartedView: View {
                             .strokeBorder(.green, lineWidth: 4)
                             .frame(height: 60)
                             .padding()
-                        Text("Get Started")
+                        Text(StringConstant.getStarted)
                             .font(.system(size: 24))
                             .bold()
                             .foregroundColor(.green)

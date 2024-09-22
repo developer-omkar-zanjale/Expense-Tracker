@@ -29,12 +29,12 @@ struct ProfileView: View {
                                 .frame(width: 140, height: 140)
                                 .cornerRadius(70)
                         } else {
-                            GIFView(fileName: "hello")
+                            GIFView(fileName: ImageConstant.GIFHello)
                                 .frame(width: 140, height: 140)
                                 .cornerRadius(70)
                         }
                     } else {
-                        GIFView(fileName: "hello")
+                        GIFView(fileName: ImageConstant.GIFHello)
                             .frame(width: 140, height: 140)
                             .cornerRadius(70)
                     }
@@ -49,33 +49,33 @@ struct ProfileView: View {
             //MARK: Inputs
             VStack {
                 HStack {
-                    Image(systemName: "person")
+                    Image(systemName: ImageConstant.SYS_person)
                         .resizable()
                         .foregroundColor(.black)
                         .frame(width: 22, height: 22)
                         .padding()
                         .border(Color.dimGray, width: 2)
-                    CustomTextView(text: user?.name ?? "No Name" )
+                    CustomTextView(text: user?.name ?? StringConstant.noName)
                 }
                 
                 HStack {
-                    Image(systemName: "envelope")
+                    Image(systemName: ImageConstant.SYS_envelope)
                         .resizable()
                         .foregroundColor(.black)
                         .frame(width: 22, height: 22)
                         .padding()
                         .border(Color.dimGray, width: 2)
-                    CustomTextView(text: user?.email ?? "No Email")
+                    CustomTextView(text: user?.email ?? StringConstant.noEmail)
                 }
                 
                 HStack {
-                    Image(systemName: "person.badge.key")
+                    Image(systemName: ImageConstant.SYS_person_badge_key)
                         .resizable()
                         .foregroundColor(.black)
                         .frame(width: 22, height: 22)
                         .padding()
                         .border(Color.dimGray, width: 2)
-                    CustomTextView(text: user?.password ?? "No Password")
+                    CustomTextView(text: user?.password ?? StringConstant.noPassword)
                 }
             }
             .padding([.leading, .trailing])
@@ -83,7 +83,7 @@ struct ProfileView: View {
             Button {
                 self.mode.wrappedValue.dismiss()
             } label: {
-                CustomButtonView(title: "Home", backgroundColor: .background, titleColor: .primary)
+                CustomButtonView(title: StringConstant.home, backgroundColor: .background, titleColor: .primary)
                     .padding()
             }
             

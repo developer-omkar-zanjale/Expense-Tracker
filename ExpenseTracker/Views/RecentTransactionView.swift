@@ -14,7 +14,7 @@ struct RecentTransactionView: View {
         VStack {
             HStack {
                 //MARK: Title
-                Text("Recent Transactions")
+                Text(StringConstant.recentTransactions)
                     .bold()
                 Spacer()
                 //MARK: See all
@@ -22,8 +22,8 @@ struct RecentTransactionView: View {
                     TransactionListView()
                 } label: {
                     HStack(spacing: 4) {
-                        Text("See all")
-                        Image(systemName: "chevron.right")
+                        Text(StringConstant.seeAll)
+                        Image(systemName: ImageConstant.SYS_chevron_right)
                     }
                     .foregroundColor(Color.text)
                 }

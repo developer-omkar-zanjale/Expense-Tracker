@@ -7,18 +7,30 @@
 
 import Foundation
 
-class AddTransactionViewModel {
+class AddTransactionViewModel: ObservableObject {
+    
+    @Published var merchant = ""
+    @Published var transactionType = ""
+    @Published var isTransfer = ""
+    @Published var isExpense = ""
+    @Published var isPending = ""
+    @Published var amount = ""
+    @Published var category = ""
+    @Published var isAlertShown = false
+    @Published var isAddTransactionClicked = false
+    @Published var alertTitle = AlertConstant.unableToAddFillAppropriateData
+    
     let categories: [String] = Category.allCategories.map({$0.name})
     let transactionTypes = [TransactionType.debit.rawValue, TransactionType.credit.rawValue]
     let transactionDecisions:[String] = [Decision.True.rawValue, Decision.False.rawValue]
-    var alertTitle = "Unable to add. Fill appropriate data!"
     
-    func addTransaction(merchant: String, category: String, amount: String, transactionType: String, isTransfer: String, isPending: String, isExpense: String) -> Transaction? {
+    
+    func addTransaction() -> Transaction? {
         if merchant.isEmpty||category.isEmpty||amount.isEmpty||transactionType.isEmpty||isTransfer.isEmpty||isExpense.isEmpty {
             return nil
         }
         var newTransaction = Transaction()
-        newTransaction.id = Constant.lastTransactionID + 1
+        newTransaction.id = AppConstant.lastTransactionID + 1
         newTransaction.date = Date.getCurrentDate()
         newTransaction.merchant = merchant
         newTransaction.amount = Double(amount) ?? 0.0
@@ -43,5 +55,15 @@ class AddTransactionViewModel {
             newTransaction.isExpense = false
         }
         return newTransaction
+    }
+    
+    func resetInputes() {
+        merchant = ""
+        transactionType = ""
+        isTransfer = ""
+        isExpense = ""
+        isPending = ""
+        amount = ""
+        category = ""
     }
 }
