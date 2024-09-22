@@ -13,34 +13,17 @@ Logout: Securely log out of the app when you're done.
 Dark/Light Mode: Application supports both dark & light mode
 
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Display</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        .image-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
-    </style>
-</head>
 <body>
-    <h1>Overview</h1>
-    <img src="https://github.com/user-attachments/assets/bb093327-7122-4513-a708-b1c861a82f57" width="300" />
-    <h3>Sign-In & Sign-UP</h3>
+    <h1 style="color:red">Overview</h1>
+    <img style="padding: 30px;" src="https://github.com/user-attachments/assets/bb093327-7122-4513-a708-b1c861a82f57" width="300" />
+    <h3 style="color:blue">Sign-In & Sign-UP</h3>
     <div class="image-container">
-        <img src="https://github.com/user-attachments/assets/390d79a2-0978-4def-8f68-e495633175d4" width="300">
-        <img src="https://github.com/user-attachments/assets/3b4408f5-7599-46d0-acf9-c0592181d22b" width="300">
+        <img style="color:blue; padding: 30px;" src="https://github.com/user-attachments/assets/390d79a2-0978-4def-8f68-e495633175d4" width="300">
+        <img style="padding: 30px;" src="https://github.com/user-attachments/assets/3b4408f5-7599-46d0-acf9-c0592181d22b" width="300">
     </div>
-   <h3>Home</h3>
-    <div class="image-container">
-        <img src="https://github.com/user-attachments/assets/7977a3b7-9964-4ad1-a29a-247d3dbb4495" width="300">
-        <img src="https://github.com/user-attachments/assets/b0314c67-c720-4d04-9cad-be6fa7667ea8" width="300">
+   <h3 style="color:blue">Home</h3>
+    <div>
+        <img style="padding: 30px;" src="https://github.com/user-attachments/assets/7977a3b7-9964-4ad1-a29a-247d3dbb4495" width="300">
+        <img style="padding: 30px;" src="https://github.com/user-attachments/assets/b0314c67-c720-4d04-9cad-be6fa7667ea8" width="300">
     </div>
 </body>
