@@ -14,3 +14,16 @@ Dark/Light Mode: Application supports both dark & light mode
 
 
 ![appicon](https://github.com/user-attachments/assets/bb093327-7122-4513-a708-b1c861a82f57)
+
+Overview: 
+Sign In:
+![Simulator Screenshot - iPhone 15 Pro - 2024-09-22 at 18 47 18](https://github.com/user-attachments/assets/390d79a2-0978-4def-8f68-e495633175d4)
+
+Sign Up:
+![Simulator Screenshot - iPhone 15 Pro - 2024-09-22 at 18 47 25](https://github.com/user-attachments/assets/3b4408f5-7599-46d0-acf9-c0592181d22b)
+
+Home:
+![Simulator Screenshot - iPhone 15 Pro - 2024-09-22 at 18 49 35](https://github.com/user-attachments/assets/7977a3b7-9964-4ad1-a29a-247d3dbb4495)
+
+
+![Simulator Screenshot - iPhone 15 Pro - 2024-09-22 at 18 50 17](https://github.com/user-attachments/assets/b0314c67-c720-4d04-9cad-be6fa7667ea8)
