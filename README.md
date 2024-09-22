@@ -12,6 +12,7 @@ Profile: View your profile information.
 Logout: Securely log out of the app when you're done.
 Dark/Light Mode: Application supports both dark & light mode
 
+<img src="https://github.com/user-attachments/assets/bb093327-7122-4513-a708-b1c861a82f57" width="200" />
 
 ![appicon](https://github.com/user-attachments/assets/bb093327-7122-4513-a708-b1c861a82f57)
 
