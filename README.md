@@ -14,7 +14,7 @@ Dark/Light Mode: Application supports both dark & light mode
 
 
 <body>
-    <h1>Overview</h1>
+    <h1>Overview[Dark & Light Mode]</h1>
     <img style="padding: 30px;" src="https://github.com/user-attachments/assets/bb093327-7122-4513-a708-b1c861a82f57" width="300" />
     <p>
     <h3>Sign-In</h3>
